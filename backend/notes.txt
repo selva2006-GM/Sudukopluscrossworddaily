@@ -1,0 +1,40 @@
+// import { createServer } from "node:http";
+// const server = createServer();
+
+const http = require("node:http");
+const server  =  http.createServer();
+
+// server.listen(port, hostname, backlog, callback);
+
+// import { createServer }from "node::http";
+
+// const server = createServer(urlToHttpOptions, callback);
+
+// const server = createServer(options, function(request, response));
+
+
+// server.listen(3000, "127.0.0.1", 511, ()=>{
+//     const info = server.address();
+//     console.log(`Server running at http://${info.address}:${info.port}/`);
+// });;
+
+
+
+
+
+import { createServer } from "node:http";
+
+const hostname = "localhost";
+const port = 3000;
+
+const server = createServer((req, res) =>{
+    res.statusCode = 200;
+    res.setHeader("Content-Type", "text/plain");
+    res.end("Hello World!");
+});
+
+
+
+server.listen(port, hostname, ()=>{
+    console.log(`Server running at http://${hostname}:${port}/`);
+});

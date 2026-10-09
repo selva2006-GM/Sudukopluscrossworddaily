@@ -1,11 +1,28 @@
-// import { createServer } from "node:http";
-// const server = createServer();
+import { createServer } from "node:http";
+import { join } from "node:path";
 
-const http = require("node:http");
-const server  =  http.createServer();
+const hostname = "localhost";
+const port = 3000;
 
-// server.listen(port, hostname, backlog, callback);
-server.listen(3000, "127.0.0.1", 511, ()=>{
-    const info = server.address();
-    console.log(`Server running at http://${info.address}:${info.port}/`);
-});;
+const server = createServer((req, res)=>{
+    if(req.method == "GET" && req.url === "/"){
+        res.writeHead(200, {"Content-Type": "text/plain"});
+        res.end("Welcome to the homepage!");
+    }else if(req.method === "GET" && req.url ==="/books"){
+        const books = [
+            {id : 1, name : "Code React Sweetly"},
+            {id : 2, name : "Creating NPM package"},
+        ];
+        res.writeHead(200, {"Content-Type" : "application/json"});
+        res.end(JSON.stringify(books));
+    }else{
+        res.writeHead(404, {"Content-Type":"text//plain"});
+        res.end("Page not found");
+
+    }
+});
+
+server.listen(port, hostname, ()=>{
+    console.log(`Server running at http://${hostname}:${port}/`);
+});
+
