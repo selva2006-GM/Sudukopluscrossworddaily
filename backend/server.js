@@ -1,28 +1,32 @@
 import { createServer } from "node:http";
-import { join } from "node:path";
+import rateLimiter from "./src/middleware/rateLimiter.js";
+import {connectDB} from "./src/database/db.js";
+import { start } from "node:repl";
 
-const hostname = "localhost";
-const port = 3000;
 
-const server = createServer((req, res)=>{
-    if(req.method == "GET" && req.url === "/"){
-        res.writeHead(200, {"Content-Type": "text/plain"});
-        res.end("Welcome to the homepage!");
-    }else if(req.method === "GET" && req.url ==="/books"){
-        const books = [
-            {id : 1, name : "Code React Sweetly"},
-            {id : 2, name : "Creating NPM package"},
-        ];
-        res.writeHead(200, {"Content-Type" : "application/json"});
-        res.end(JSON.stringify(books));
-    }else{
-        res.writeHead(404, {"Content-Type":"text//plain"});
-        res.end("Page not found");
+const server = createServer((req, res) =>{
+    rateLimiter(req, res, ()=>{
+        res.writeHead(200, {
+            "Content-Type": "text/plain"
+        });
+        res.end("Hello from Node.js!");
+    });
+});
+
+
+
+async function startServer(){
+    try{
+        await connectDB();
+
+        server.listen(3000, ()=>{
+            console.log("Server running at http://localhost:3000");
+        });
+        
+    }catch(error){
+        console.log("Failed to start server:", error.message);
 
     }
-});
+}
 
-server.listen(port, hostname, ()=>{
-    console.log(`Server running at http://${hostname}:${port}/`);
-});
-
+startServer();
